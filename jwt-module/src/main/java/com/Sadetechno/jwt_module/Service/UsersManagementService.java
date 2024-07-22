@@ -8,6 +8,7 @@ import com.Sadetechno.jwt_module.model.ReqRes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -34,38 +35,82 @@ public class UsersManagementService {
     @Autowired
     private EmailService emailService;
 
+//    public ReqRes register(ReqRes registrationRequest) {
+//        ReqRes resp = new ReqRes();
+//        try {
+//            // Check if a user with the provided email already exists
+//            Optional<OurUsers> existingUser = usersRepo.findByEmail(registrationRequest.getEmail());
+//            if (existingUser.isPresent()) {
+//                // User already exists, return a message to log in
+//                resp.setStatusCode(409); // Conflict
+//                resp.setMessage("User already exists. Please log in.");
+//                return resp;
+//            }
+//
+//            // Create a new user if email is not in use
+//            OurUsers ourUser = new OurUsers();
+//            ourUser.setEmail(registrationRequest.getEmail());
+//            ourUser.setConfirmPassword(registrationRequest.getConfirmPassword());
+//            ourUser.setPhoneNumber(registrationRequest.getPhoneNumber());
+//            ourUser.setRole(registrationRequest.getRole());
+//            ourUser.setName(registrationRequest.getName());
+//            ourUser.setPassword(passwordEncoder.encode(registrationRequest.getPassword()));
+//            OurUsers ourUsersResult = usersRepo.save(ourUser);
+//
+//            if (ourUsersResult.getId() > 0) {
+//                resp.setOurUsers(ourUsersResult);
+//                resp.setMessage("User registered successfully");
+//                resp.setStatusCode(201); // Created
+//            }
+//        } catch (Exception e) {
+//            resp.setStatusCode(500);
+//            resp.setError(e.getMessage());
+//        }
+//        return resp;
+//    }
+
     public ReqRes register(ReqRes registrationRequest) {
         ReqRes resp = new ReqRes();
-
-        if (!registrationRequest.getPassword().equals(registrationRequest.getConfirmPassword())) {
-            resp.setStatusCode(400);
-            resp.setMessage("Password and Confirm Password do not match");
-            return resp;
-        }
-
         try {
-            OurUsers ourUser = new OurUsers();
-            ourUser.setEmail(registrationRequest.getEmail());
-            ourUser.setConfirmPassword(registrationRequest.getConfirmPassword());
-            ourUser.setRole(registrationRequest.getRole());
-            ourUser.setName(registrationRequest.getName());
-            ourUser.setPassword(passwordEncoder.encode(registrationRequest.getPassword()));
-            // Handle null phone number
-            ourUser.setPhoneNumber(Optional.ofNullable(registrationRequest.getPhoneNumber()).orElse(""));
-
-            OurUsers ourUsersResult = usersRepo.save(ourUser);
-            if (ourUsersResult.getId() > 0) {
-                resp.setOurUsers((ourUsersResult));
-                resp.setMessage("User Saved Successfully");
-                resp.setStatusCode(200);
+            // Check if the password and confirm password fields match
+            if (!registrationRequest.getPassword().equals(registrationRequest.getConfirmPassword())) {
+                resp.setStatusCode(400); // Bad Request
+                resp.setMessage("Password and confirm password do not match.");
+                return resp;
             }
 
+            // Check if a user with the provided email already exists
+            Optional<OurUsers> existingUser = usersRepo.findByEmail(registrationRequest.getEmail());
+            if (existingUser.isPresent()) {
+                // User already exists, return a message to log in
+                resp.setStatusCode(409); // Conflict
+                resp.setMessage("User already exists. Please log in.");
+                return resp;
+            }
+
+            // Create a new user if email is not in use
+            OurUsers ourUser = new OurUsers();
+            ourUser.setEmail(registrationRequest.getEmail());
+            ourUser.setPhoneNumber(registrationRequest.getPhoneNumber());
+            ourUser.setRole(registrationRequest.getRole());
+            ourUser.setName(registrationRequest.getName());
+            ourUser.setPassword(passwordEncoder.encode(registrationRequest.getPassword())); // Encode password
+            ourUser.setConfirmPassword(passwordEncoder.encode(registrationRequest.getConfirmPassword())); // Encode confirmPassword
+
+            OurUsers ourUsersResult = usersRepo.save(ourUser);
+
+            if (ourUsersResult.getId() > 0) {
+                resp.setOurUsers(ourUsersResult);
+                resp.setMessage("User registered successfully");
+                resp.setStatusCode(201); // Created
+            }
         } catch (Exception e) {
             resp.setStatusCode(500);
             resp.setError(e.getMessage());
         }
         return resp;
     }
+
 
     public ReqRes login(ReqRes loginRequest) {
         ReqRes response = new ReqRes();
@@ -82,17 +127,19 @@ public class UsersManagementService {
             response.setRefreshToken(refreshToken);
             response.setExpirationTime("24Hrs");
             response.setMessage("Successfully Logged In");
-
         } catch (Exception e) {
+            // Log detailed error information
             response.setStatusCode(500);
-            response.setMessage(e.getMessage());
+            response.setMessage("Login failed: " + e.getMessage());
         }
         return response;
     }
 
-    public ReqRes refreshToken(ReqRes refreshTokenReqiest) {
+
+
+    public ReqRes refreshToken(ReqRes refreshTokenReqiest){
         ReqRes response = new ReqRes();
-        try {
+        try{
             String ourEmail = jwtUtils.extractUsername(refreshTokenReqiest.getToken());
             OurUsers users = usersRepo.findByEmail(ourEmail).orElseThrow();
             if (jwtUtils.isTokenValid(refreshTokenReqiest.getToken(), users)) {
@@ -106,14 +153,16 @@ public class UsersManagementService {
             response.setStatusCode(200);
             return response;
 
-        } catch (Exception e) {
+        }catch (Exception e){
             response.setStatusCode(500);
             response.setMessage(e.getMessage());
             return response;
         }
     }
 
-    public ReqRes getMyInfo(String email) {
+
+
+    public ReqRes getMyInfo(String email){
         ReqRes reqRes = new ReqRes();
         try {
             Optional<OurUsers> userOptional = usersRepo.findByEmail(email);
@@ -126,19 +175,20 @@ public class UsersManagementService {
                 reqRes.setMessage("User not found for update");
             }
 
-        } catch (Exception e) {
+        }catch (Exception e){
             reqRes.setStatusCode(500);
             reqRes.setMessage("Error occurred while getting user info: " + e.getMessage());
         }
         return reqRes;
-    }
 
+    }
     public long getTotalUsers() {
         return usersRepo.count();
     }
 
 
-//    public ReqRes requestPasswordReset(String email) {
+
+    //    public ReqRes requestPasswordReset(String email) {
 //        ReqRes response = new ReqRes();
 //        try {
 //            Optional<OurUsers> userOptional = usersRepo.findByEmail(email);
@@ -203,48 +253,61 @@ public class UsersManagementService {
 //        int otp = 1000 + new Random().nextInt(9000);
 //        return String.valueOf(otp);
 //    }
-public ReqRes requestPasswordReset(String email) {
-    ReqRes response = new ReqRes();
-    try {
-        Optional<OurUsers> userOptional = usersRepo.findByEmail(email);
-        if (userOptional.isPresent()) {
-            String otp = generateOtp();
-            otpRepository.save(new OtpEntity(email, otp, LocalDateTime.now()));
-            emailService.sendOtpEmail(email, otp);
-
-            response.setStatusCode(200);
-            response.setMessage("OTP sent successfully");
-        } else {
-            response.setStatusCode(404);
-            response.setMessage("User not found");
-        }
-    } catch (Exception e) {
-        response.setStatusCode(500);
-        response.setMessage("Error occurred while processing request: " + e.getMessage());
-    }
-    return response;
-}
-
-    public ReqRes verifyOtpAndResetPassword(String email, String otp, String newPassword) {
+    public ReqRes requestPasswordReset(String email) {
         ReqRes response = new ReqRes();
         try {
+            Optional<OurUsers> userOptional = usersRepo.findByEmail(email);
+            if (userOptional.isPresent()) {
+                String otp = generateOtp();
+                otpRepository.save(new OtpEntity(email, otp, LocalDateTime.now()));
+                emailService.sendOtpEmail(email, otp);
+
+                response.setStatusCode(200);
+                response.setMessage("OTP sent successfully");
+            } else {
+                response.setStatusCode(404);
+                response.setMessage("User not found");
+            }
+        } catch (Exception e) {
+            response.setStatusCode(500);
+            response.setMessage("Error occurred while processing request: " + e.getMessage());
+        }
+        return response;
+    }
+
+    public ReqRes verifyOtpAndResetPassword(String email, String otp, String newPassword, String confirmPassword) {
+        ReqRes response = new ReqRes();
+        try {
+            // Check if OTP exists and is valid
             Optional<OtpEntity> otpEntity = otpRepository.findByEmailAndOtp(email, otp);
             if (otpEntity.isPresent()) {
                 LocalDateTime otpCreatedAt = otpEntity.get().getCreatedAt();
+
+                // Check if OTP has expired (e.g., 15 minutes expiry)
                 if (LocalDateTime.now().isBefore(otpCreatedAt.plusMinutes(15))) {
-                    Optional<OurUsers> userOptional = usersRepo.findByEmail(email);
-                    if (userOptional.isPresent()) {
-                        OurUsers user = userOptional.get();
-                        user.setPassword(passwordEncoder.encode(newPassword));
-                        usersRepo.save(user);
+                    // Check if the new password and confirm password match
+                    if (newPassword.equals(confirmPassword)) {
+                        // Find the user by email
+                        Optional<OurUsers> userOptional = usersRepo.findByEmail(email);
+                        if (userOptional.isPresent()) {
+                            OurUsers user = userOptional.get();
+                            // Encode the new password and update the user
+                            user.setPassword(passwordEncoder.encode(newPassword));
+                            user.setConfirmPassword(passwordEncoder.encode(confirmPassword)); // Store confirm password as well
+                            usersRepo.save(user);
 
-                        otpRepository.delete(otpEntity.get());
+                            // Remove OTP from the database
+                            otpRepository.delete(otpEntity.get());
 
-                        response.setStatusCode(200);
-                        response.setMessage("Password reset successfully");
+                            response.setStatusCode(200);
+                            response.setMessage("Password reset successfully");
+                        } else {
+                            response.setStatusCode(404);
+                            response.setMessage("User not found");
+                        }
                     } else {
-                        response.setStatusCode(404);
-                        response.setMessage("User not found");
+                        response.setStatusCode(400);
+                        response.setMessage("New password and confirm password do not match");
                     }
                 } else {
                     response.setStatusCode(400);
@@ -260,6 +323,8 @@ public ReqRes requestPasswordReset(String email) {
         }
         return response;
     }
+
+
 
     private String generateOtp() {
         return String.format("%04d", new Random().nextInt(10000));

@@ -25,6 +25,7 @@ public class UserManagementController {
 
     @PostMapping("/login")
     @CrossOrigin("http://localhost:4200")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
     public ResponseEntity<ReqRes> login(@RequestBody ReqRes req) {
         return ResponseEntity.ok(usersManagementService.login(req));
     }
@@ -64,7 +65,8 @@ public class UserManagementController {
         String email = request.get("email");
         String otp = request.get("otp");
         String newPassword = request.get("newPassword");
-        ReqRes response = usersManagementService.verifyOtpAndResetPassword(email, otp, newPassword);
+        String confirmPassword = request.get("confirmPassword");
+        ReqRes response = usersManagementService.verifyOtpAndResetPassword(email, otp, newPassword,confirmPassword);
         return ResponseEntity.status(response.getStatusCode()).body(response);
     }
 }
