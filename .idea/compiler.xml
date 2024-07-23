@@ -11,6 +11,7 @@
         <module name="post-module" />
         <module name="user-module" />
         <module name="eureka-server" />
+        <module name="like-module" />
         <module name="jwt-module" />
       </profile>
     </annotationProcessing>
@@ -26,6 +27,7 @@
       <module name="destiny" options="-parameters" />
       <module name="eureka-server" options="-parameters" />
       <module name="jwt-module" options="-parameters" />
+      <module name="like-module" options="-parameters" />
       <module name="post-module" options="-parameters" />
       <module name="user-module" options="-parameters" />
     </option>

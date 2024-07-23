@@ -11,6 +11,7 @@
         <option value="$PROJECT_DIR$/jwt-module/pom.xml" />
         <option value="$PROJECT_DIR$/user-module/pom.xml" />
         <option value="$PROJECT_DIR$/post-module/pom.xml" />
+        <option value="$PROJECT_DIR$/like-module/pom.xml" />
       </list>
     </option>
   </component>
