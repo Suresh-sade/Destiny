@@ -55,6 +55,9 @@
         <module>eureka-server</module>
         <module>api-gateway</module>
         <module>jwt-module</module>
+        <module>user-module</module>
+
+
 
     </modules>
 </project>
