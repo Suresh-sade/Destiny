@@ -1,8 +1,7 @@
-package com.Sadetechno.user_module.Service;
+package com.Sadetechno.post_module.Service;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.util.StringUtils;
-
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -38,4 +37,17 @@ public class FileUploadService {
         }
     }
 
+    public void deleteFile(String fileUrl) throws IOException {
+        if (fileUrl != null) {
+            String fileName = fileUrl.substring(fileUrl.lastIndexOf('/') + 1);
+            Path filePath = Paths.get(uploadDir + fileName);
+            if (Files.exists(filePath)) {
+                Files.delete(filePath);
+            } else {
+                throw new IOException("File not found: " + filePath.toString());
+            }
+        }
+    }
+
 }
+
