@@ -8,6 +8,7 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="api-gateway" />
+        <module name="post-module" />
         <module name="user-module" />
         <module name="eureka-server" />
         <module name="jwt-module" />
@@ -25,6 +26,7 @@
       <module name="destiny" options="-parameters" />
       <module name="eureka-server" options="-parameters" />
       <module name="jwt-module" options="-parameters" />
+      <module name="post-module" options="-parameters" />
       <module name="user-module" options="-parameters" />
     </option>
   </component>
