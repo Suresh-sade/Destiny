@@ -7,12 +7,13 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="user-module" />
+        <module name="jwt-module" />
         <module name="api-gateway" />
         <module name="post-module" />
-        <module name="user-module" />
+        <module name="comment-module" />
         <module name="eureka-server" />
         <module name="like-module" />
-        <module name="jwt-module" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
@@ -24,6 +25,7 @@
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="api-gateway" options="-parameters" />
       <module name="api-getway" options="-parameters" />
+      <module name="comment-module" options="-parameters" />
       <module name="destiny" options="-parameters" />
       <module name="eureka-server" options="-parameters" />
       <module name="jwt-module" options="-parameters" />
