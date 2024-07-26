@@ -20,12 +20,13 @@ public class UserManagementController {
     private UsersManagementService usersManagementService;
 
     @PostMapping("/register")
+    @CrossOrigin(origins = "http://localhost:3000")
     public ResponseEntity<ReqRes> register(@RequestBody ReqRes reg) {
         return ResponseEntity.ok(usersManagementService.register(reg));
     }
 
     @PostMapping("/login")
-    @CrossOrigin("http://localhost:4200")
+    @CrossOrigin("http://localhost:3000")
     @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
     public ResponseEntity<ReqRes> login(@RequestBody ReqRes req) {
         return ResponseEntity.ok(usersManagementService.login(req));
