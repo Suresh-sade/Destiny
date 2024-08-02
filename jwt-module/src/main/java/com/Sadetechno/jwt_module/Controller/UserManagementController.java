@@ -1,6 +1,7 @@
 package com.Sadetechno.jwt_module.Controller;
 
 import com.Sadetechno.jwt_module.Service.UsersManagementService;
+import com.Sadetechno.jwt_module.model.OtpEntity;
 import com.Sadetechno.jwt_module.model.ReqRes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -9,6 +10,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -23,6 +25,10 @@ public class UserManagementController {
     @CrossOrigin(origins = "http://localhost:3000")
     public ResponseEntity<ReqRes> register(@RequestBody ReqRes reg) {
         return ResponseEntity.ok(usersManagementService.register(reg));
+    }
+    @PostMapping("/verifyOtp")
+    public ReqRes verifyOtpAndRegister(@RequestBody ReqRes reqRes) {
+        return usersManagementService.verifyOtpAndRegister(reqRes);
     }
 
     @PostMapping("/login")
@@ -71,4 +77,13 @@ public class UserManagementController {
         ReqRes response = usersManagementService.verifyOtpAndResetPassword(email, otp, newPassword,confirmPassword);
         return ResponseEntity.status(response.getStatusCode()).body(response);
     }
+    @PostMapping("/login-with-otp")
+    @CrossOrigin("http://localhost:3000")
+    public ResponseEntity<ReqRes> loginWithOtp(@RequestBody Map<String, String> request) {
+        String email = request.get("email");
+        String otp = request.get("otp");
+        ReqRes response = usersManagementService.loginWithOtp(email, otp);
+        return ResponseEntity.status(response.getStatusCode()).body(response);
+    }
+
 }
