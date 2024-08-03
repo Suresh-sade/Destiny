@@ -32,7 +32,7 @@ public class SecurityConfig {
         httpSecurity.csrf(AbstractHttpConfigurer::disable)
                 .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(requests -> requests
-                        .requestMatchers("/api/auth/register", "/api/auth/login", "/api/auth/forgot-password", "/api/auth/reset-password", "/api/auth/verifyOtp", "/api/auth/otp").permitAll()
+                        .requestMatchers("/api/auth/register", "/api/auth/otp","/api/auth/otps/descending","/api/auth/login", "/api/auth/forgot-password", "/api/auth/reset-password", "/api/auth/verifyOtp","/api/auth/users/descending").permitAll()
                         .anyRequest().authenticated())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider())

@@ -261,6 +261,7 @@ public class UsersManagementService {
         int otp = 100000 + random.nextInt(900000);
         return String.valueOf(otp);
     }
+
     public ReqRes loginWithOtp(String email, String otp) {
         ReqRes response = new ReqRes();
         try {
@@ -299,4 +300,12 @@ public class UsersManagementService {
         return response;
     }
 
+    public List<OurUsers> getAllUsersDescending() {
+        return usersRepo.findAllByOrderByIdDesc();
+    }
+
+    public List<OtpEntity> getAllOtpsDescending() {
+        return otpRepository.findAllByOrderByIdDesc();
+
+    }
 }

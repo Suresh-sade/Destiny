@@ -2,6 +2,7 @@ package com.Sadetechno.jwt_module.Controller;
 
 import com.Sadetechno.jwt_module.Service.UsersManagementService;
 import com.Sadetechno.jwt_module.model.OtpEntity;
+import com.Sadetechno.jwt_module.model.OurUsers;
 import com.Sadetechno.jwt_module.model.ReqRes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -84,6 +85,19 @@ public class UserManagementController {
         String otp = request.get("otp");
         ReqRes response = usersManagementService.loginWithOtp(email, otp);
         return ResponseEntity.status(response.getStatusCode()).body(response);
+    }
+
+    @GetMapping("/users/descending")
+    @PreAuthorize("hasAuthority('USER')")
+    public ResponseEntity<List<OurUsers>> getUsersDescending() {
+        List<OurUsers> users = usersManagementService.getAllUsersDescending();
+        return ResponseEntity.ok(users);
+    }
+    @GetMapping("/otps/descending")
+    @PreAuthorize("hasAuthority('USER')")
+    public ResponseEntity<List<OtpEntity>> getOtpsDescending() {
+        List<OtpEntity> otps = usersManagementService.getAllOtpsDescending();
+        return ResponseEntity.ok(otps);
     }
 
 }
