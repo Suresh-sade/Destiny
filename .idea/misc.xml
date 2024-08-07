@@ -13,6 +13,7 @@
         <option value="$PROJECT_DIR$/post-module/pom.xml" />
         <option value="$PROJECT_DIR$/like-module/pom.xml" />
         <option value="$PROJECT_DIR$/comment-module/pom.xml" />
+        <option value="$PROJECT_DIR$/status-module/pom.xml" />
       </list>
     </option>
   </component>

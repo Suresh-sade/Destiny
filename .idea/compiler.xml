@@ -12,6 +12,7 @@
         <module name="api-gateway" />
         <module name="post-module" />
         <module name="comment-module" />
+        <module name="status-module" />
         <module name="eureka-server" />
         <module name="like-module" />
       </profile>
@@ -31,6 +32,7 @@
       <module name="jwt-module" options="-parameters" />
       <module name="like-module" options="-parameters" />
       <module name="post-module" options="-parameters" />
+      <module name="status-module" options="-parameters" />
       <module name="user-module" options="-parameters" />
     </option>
   </component>

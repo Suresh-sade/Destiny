@@ -58,6 +58,7 @@
         <module>jwt-module</module>
         <module>user-module</module>
         <module>post-module</module>
+        <module>status-module</module>
 
 
 
