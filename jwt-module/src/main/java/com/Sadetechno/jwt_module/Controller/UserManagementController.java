@@ -5,6 +5,7 @@ import com.Sadetechno.jwt_module.model.OtpEntity;
 import com.Sadetechno.jwt_module.model.OurUsers;
 import com.Sadetechno.jwt_module.model.ReqRes;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -28,9 +29,28 @@ public class UserManagementController {
         return ResponseEntity.ok(usersManagementService.register(reg));
     }
     @PostMapping("/verifyOtp")
-    public ReqRes verifyOtpAndRegister(@RequestBody ReqRes reqRes) {
-        return usersManagementService.verifyOtpAndRegister(reqRes);
+    public ResponseEntity<ReqRes> verifyOtpAndRegister(@RequestBody ReqRes verificationRequest) {
+        ReqRes response = usersManagementService.verifyOtpAndRegister(verificationRequest);
+
+        HttpStatus status;
+        switch (response.getStatusCode()) {
+            case 201:
+                status = HttpStatus.CREATED;
+                break;
+            case 400:
+                status = HttpStatus.BAD_REQUEST;
+                break;
+            case 500:
+                status = HttpStatus.INTERNAL_SERVER_ERROR;
+                break;
+            default:
+                status = HttpStatus.OK;
+                break;
+        }
+
+        return new ResponseEntity<>(response, status);
     }
+
 
     @PostMapping("/login")
     @CrossOrigin("http://localhost:3000")
