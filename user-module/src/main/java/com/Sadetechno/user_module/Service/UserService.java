@@ -25,7 +25,7 @@ public class UserService {
     }
 
     public Optional<User> getUserById(Long id) {
-        return userRepository.findById(id);
+        return userRepository.findByUserid(id);
     }
 
     public User saveUser(User user) {
@@ -88,7 +88,7 @@ public class UserService {
     }
 
     public User updateUser(Long id, UserCreationDTO userUpdateDTO) throws IOException {
-        Optional<User> existingUserOptional = userRepository.findById(id);
+        Optional<User> existingUserOptional = userRepository.findByUserid(id);
         if (!existingUserOptional.isPresent()) {
             throw new IllegalArgumentException("User with id " + id + " not found");
         }

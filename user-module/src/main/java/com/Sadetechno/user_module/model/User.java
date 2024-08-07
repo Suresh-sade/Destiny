@@ -20,8 +20,9 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
+    private Long userid;
     private String name;
+
     private String aboutMe;
     private Date birthday;
     private String phno;

@@ -1,5 +1,4 @@
 package com.Sadetechno.jwt_module.Service;
-
 import com.Sadetechno.jwt_module.Repository.OtpRepository;
 import com.Sadetechno.jwt_module.Repository.UsersRepo;
 import com.Sadetechno.jwt_module.model.OtpEntity;
@@ -10,7 +9,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
@@ -270,7 +268,7 @@ public class UsersManagementService {
                 LocalDateTime otpCreatedAt = otpEntity.get().getCreatedAt();
 
                 // Check if OTP has expired (e.g., 15 minutes expiry)
-                if (LocalDateTime.now().isBefore(otpCreatedAt.plusMinutes(15))) {
+                if (LocalDateTime.now().isBefore(otpCreatedAt.plusMinutes(5))) {
                     // Authenticate user
                     var user = usersRepo.findByEmail(email).orElseThrow();
                     var jwt = jwtUtils.generateToken(user);
