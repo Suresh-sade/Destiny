@@ -2,6 +2,7 @@ package com.Sadetechno.post_module.Service;
 import com.Sadetechno.post_module.Repository.PostRepository;
 import com.Sadetechno.post_module.model.Post;
 import com.Sadetechno.post_module.model.PostType;
+import com.Sadetechno.post_module.model.PrivacySetting;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -17,12 +18,15 @@ public class PostService {
     @Autowired
     private FileUploadService fileUploadService; // Injecting FileUploadService
 
-    public Post createPost(Long userId, String postType, String textContent, MultipartFile imageFile, MultipartFile videoFile,String description) throws IOException {
+    public Post createPost(Long userId, String postType, String textContent, MultipartFile imageFile, MultipartFile videoFile, String description, String privacySetting) throws IOException {
         Post post = new Post();
         PostType type = PostType.valueOf(postType);
         post.setPostType(type);
         post.setDescription(description);
         post.setUserId(userId);
+
+        PrivacySetting privacy = PrivacySetting.valueOf(privacySetting.toUpperCase());
+        post.setPrivacySetting(privacy);  // Set privacy setting
 
         switch (type) {
             case TEXT:
@@ -50,7 +54,6 @@ public class PostService {
 
         return postRepository.save(post);
     }
-
     public Post getPost(Long postId) {
         return postRepository.findById(postId).orElse(null);
     }

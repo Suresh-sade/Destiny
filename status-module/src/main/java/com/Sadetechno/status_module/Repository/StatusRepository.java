@@ -8,5 +8,6 @@ import java.util.List;
 
 public interface StatusRepository extends JpaRepository<Status,Long> {
     List<Status> findByUserId(Long userId);
-    void deleteByCreatedAtBefore(LocalDateTime cutoff);
+    List<Status> findByCreatedAtBefore(LocalDateTime cutoff);
+
 }

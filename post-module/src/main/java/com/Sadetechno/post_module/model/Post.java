@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import java.util.Date;
 
+
 @Entity
 @Table(name = "posts")
 @Data
@@ -21,10 +22,12 @@ public class Post {
     private String imageUrl;
     private String videoUrl;
 
+    @Enumerated(EnumType.STRING)
+    private PrivacySetting privacySetting;  // New field for privacy settings
+
     @Temporal(TemporalType.TIMESTAMP)
     private Date createdAt = new Date();
 
     @Column(name = "user_id")
     private Long userId;
-
 }

@@ -56,4 +56,5 @@ public class StatusService {
     public List<Status> getStatusesByUserId(Long userId) {
         return statusRepository.findByUserId(userId);
     }
+    
 }

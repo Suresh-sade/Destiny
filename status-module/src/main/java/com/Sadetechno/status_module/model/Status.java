@@ -25,6 +25,6 @@ public class Status {
     private Privacy privacy;
 
     private Long userId;
-
 }
+
 
