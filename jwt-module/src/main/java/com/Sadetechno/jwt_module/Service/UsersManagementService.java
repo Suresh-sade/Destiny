@@ -5,7 +5,9 @@ import com.Sadetechno.jwt_module.model.OtpEntity;
 import com.Sadetechno.jwt_module.model.OurUsers;
 import com.Sadetechno.jwt_module.model.ReqRes;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -117,25 +119,27 @@ public class UsersManagementService {
     public ReqRes login(ReqRes loginRequest) {
         ReqRes response = new ReqRes();
         try {
-            authenticationManager
-                    .authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getEmail(),
-                            loginRequest.getPassword()));
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
             var user = usersRepo.findByEmail(loginRequest.getEmail()).orElseThrow();
             var jwt = jwtUtils.generateToken(user);
             var refreshToken = jwtUtils.generateRefreshToken(new HashMap<>(), user);
-            response.setStatusCode(200);
             response.setToken(jwt);
             response.setRole(user.getRole());
             response.setRefreshToken(refreshToken);
             response.setExpirationTime("24Hrs");
             response.setMessage("Successfully Logged In");
+        } catch (BadCredentialsException e) {
+            response.setMessage("Login failed: Bad credentials");
+            response.setStatusCode(HttpStatus.UNAUTHORIZED.value()); // Set status code to 401
+            return response;
         } catch (Exception e) {
-            // Log detailed error information
-            response.setStatusCode(500);
             response.setMessage("Login failed: " + e.getMessage());
+            response.setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR.value()); // Set status code to 500 for general errors
         }
         return response;
     }
+
 
     public ReqRes refreshToken(ReqRes refreshTokenReqiest) {
         ReqRes response = new ReqRes();

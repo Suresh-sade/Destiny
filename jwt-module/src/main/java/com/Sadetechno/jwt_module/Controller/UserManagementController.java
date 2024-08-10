@@ -54,10 +54,14 @@ public class UserManagementController {
 
     @PostMapping("/login")
     @CrossOrigin("http://localhost:3000")
-    @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
     public ResponseEntity<ReqRes> login(@RequestBody ReqRes req) {
-        return ResponseEntity.ok(usersManagementService.login(req));
+        ReqRes response = usersManagementService.login(req);
+        if (response.getStatusCode() == HttpStatus.UNAUTHORIZED.value()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+        }
+        return ResponseEntity.ok(response);
     }
+
 
     @PostMapping("/refresh")
     public ResponseEntity<ReqRes> refreshToken(@RequestBody ReqRes req) {
