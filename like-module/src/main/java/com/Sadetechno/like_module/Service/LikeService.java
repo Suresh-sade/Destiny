@@ -40,4 +40,9 @@ public class LikeService {
     public List<Long> getUserIdsWhoLikedPost(Long postId) {
         return likeRepository.findUserIdsByPostId(postId);
     }
+
+    public boolean hasUserLikedPost(Long postId, Long userId) {
+        Optional<Like> existingLike = likeRepository.findByPostIdAndUserId(postId, userId);
+        return existingLike.isPresent();
+    }
 }

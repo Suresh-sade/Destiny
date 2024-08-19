@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/likes")
@@ -42,6 +43,15 @@ public class LikeController {
     public ResponseEntity<List<Long>> getUsersWhoLikedPost(@PathVariable Long postId) {
         List<Long> userIds = likeService.getUserIdsWhoLikedPost(postId);
         return new ResponseEntity<>(userIds, HttpStatus.OK);
+    }
+
+    @GetMapping("/post/{postId}/user/{userId}")
+    public ResponseEntity<Boolean> hasUserLikedPost(
+            @PathVariable Long postId,
+            @PathVariable Long userId) {
+
+        boolean hasLiked = likeService.hasUserLikedPost(postId, userId);
+        return new ResponseEntity<>(hasLiked, HttpStatus.OK);
     }
 }
 
